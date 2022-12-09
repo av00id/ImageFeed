@@ -7,9 +7,10 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
-    
+final class ImagesListViewController: UIViewController {
+        
     private var photosName = [String]()
+    private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     
     @IBOutlet private var tableView: UITableView!
     
@@ -23,6 +24,18 @@ class ImagesListViewController: UIViewController {
         
         photosName = Array(0..<20).map{ "\($0)" }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == ShowSingleImageSegueIdentifier {
+            let viewController = segue.destination as! SingleImageViewController
+            let indexPath = sender as! IndexPath
+            let image = UIImage(named: photosName[indexPath.row])
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
+    }
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -58,12 +71,15 @@ extension ImagesListViewController {
         cell.dateLabel.text = dateFormatter.string(from: Date())
         
         let isLiked = indexPath.row % 2 == 0
-        var likedPhoto = isLiked ? UIImage(named: "LikeButtonOn") : UIImage(named: "LikeButtonOff")
+        let likedPhoto = isLiked ? UIImage(named: "LikeButtonOn") : UIImage(named: "LikeButtonOff")
         cell.likeButton.setImage(likedPhoto, for: .normal)
     }
 }
 extension ImagesListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {}
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: ShowSingleImageSegueIdentifier, sender: indexPath)
+    }
 }
+
 
 
