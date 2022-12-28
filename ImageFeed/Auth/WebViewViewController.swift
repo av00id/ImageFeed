@@ -20,10 +20,6 @@ final class WebViewViewController: UIViewController  {
     @IBOutlet private var webView: WKWebView!
     @IBOutlet private var progressView: UIProgressView!
     
-    @IBAction private func didTapBackButton(_ sender: Any?) {
-        delegate?.webViewViewControllerDidCancel(self)
-    }
-    
     override func viewDidLoad(){
         super.viewDidLoad()
         
@@ -59,12 +55,18 @@ final class WebViewViewController: UIViewController  {
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(forKeyPath keyPath: String?,
+                               of object: Any?, change: [NSKeyValueChangeKey : Any]?,
+                               context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {
             updateProgress()
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
+    }
+    
+    @IBAction private func didTapBackButton(_ sender: Any?) {
+        delegate?.webViewViewControllerDidCancel(self)
     }
     
     private func updateProgress() {
@@ -76,15 +78,19 @@ final class WebViewViewController: UIViewController  {
 
 extension WebViewViewController: WKNavigationDelegate {
     
-    func webView(_ webView:WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    func webView(_ webView:WKWebView,
+                 decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ){
         if let code = code(from: navigationAction) {
             delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)
         }
     }
+    
     private func code(from navigationAction: WKNavigationAction) -> String? {
         if
             let url = navigationAction.request.url,
@@ -97,6 +103,5 @@ extension WebViewViewController: WKNavigationDelegate {
         } else {
             return nil
         }
-        
     }
 }

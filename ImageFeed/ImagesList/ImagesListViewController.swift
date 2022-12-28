@@ -8,7 +8,7 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-        
+    
     private var photosName = [String]()
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
