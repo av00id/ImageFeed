@@ -9,13 +9,35 @@ import Foundation
 
 final class OAuth2Service {
     
-    private enum NetworkError: Error {
-        case codeError
-    }
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    private let networkClient = NetworkRouting()
     
-    func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchAuthToken(_ code: String, handler: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        guard lastCode != code, let request = makeRequest(code: code) else { return }
         
-        if var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") {
+        task?.cancel()
+        lastCode = code
+        
+        
+        task = networkClient.fetch(requestType: .urlRequest(urlRequest: request)) {
+            [weak self] (response: Result<OAuthTokenResponseBody, Error>) in            
+            
+            guard let self = self else { return }
+            self.task = nil
+            
+            switch response {
+            case .success(let data):
+                handler(.success(data.accessToken))
+            case .failure(let error):
+                self.lastCode = nil
+                handler(.failure(error))
+            }
+        }
+    }
+    private func makeRequest(code: String) -> URLRequest? {
+        if var urlComponents = URLComponents(string: Constants.tokenURL) {
             urlComponents.queryItems = [
                 URLQueryItem(name: "client_id", value: Constants.accessKey),
                 URLQueryItem(name: "client_secret", value: Constants.secretKey),
@@ -26,32 +48,8 @@ final class OAuth2Service {
             var request = URLRequest(url: urlComponents.url!)
             request.httpMethod = "POST"
             
-            let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-                guard self != nil else { return }
-                
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                
-                if let response = response as? HTTPURLResponse,
-                   response.statusCode < 200 || response.statusCode >= 300 {
-                    completion(.failure(NetworkError.codeError))
-                    return
-                }
-                
-                if let data = data {
-                    do {
-                        let decodedData = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                        DispatchQueue.main.async {
-                            completion(.success(decodedData.accessToken))
-                        }
-                    } catch let error {
-                        completion(.failure(error))
-                    }
-                }
-            }
-            task.resume()
+            return request
         }
+        return nil
     }
 }

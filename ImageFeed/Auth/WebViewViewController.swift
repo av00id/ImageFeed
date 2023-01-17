@@ -14,7 +14,7 @@ protocol WebViewControllerDelegate: AnyObject {
 }
 
 final class WebViewViewController: UIViewController  {
-    
+    private var estimatedProgressObservation: NSKeyValueObservation?
     weak var delegate: WebViewControllerDelegate?
     
     @IBOutlet private var webView: WKWebView!
@@ -24,6 +24,7 @@ final class WebViewViewController: UIViewController  {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
+        
         
         var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString)!
         urlComponents.queryItems = [
@@ -36,37 +37,24 @@ final class WebViewViewController: UIViewController  {
         let request = URLRequest(url: url)
         webView.load(request)
         
-        updateProgress()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil)
-        updateProgress()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?,
-                               of object: Any?, change: [NSKeyValueChangeKey : Any]?,
-                               context: UnsafeMutableRawPointer?) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+             })
     }
     
     @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
+        navigationController?.popViewController(animated: true)
     }
     
     private func updateProgress() {
@@ -98,7 +86,7 @@ extension WebViewViewController: WKNavigationDelegate {
             urlComponents.path == "/oauth/authorize/native",
             let items = urlComponents.queryItems,
             let codeItem = items.first(where: { $0.name == "code"})
-                else {
+        else {
             return nil
         }
         return codeItem.value
