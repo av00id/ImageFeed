@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14269428297BD90B0025706B /* TabBarController .swift in Sources */ = {isa = PBXBuildFile; fileRef = 14269427297BD90B0025706B /* TabBarController .swift */; };
 		144AB205294C9343005916F8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144AB204294C9343005916F8 /* Constants.swift */; };
 		144AB207294CAEC4005916F8 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144AB206294CAEC4005916F8 /* AuthViewController.swift */; };
 		144AB20A294D0585005916F8 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144AB209294D0585005916F8 /* WebViewViewController.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14269427297BD90B0025706B /* TabBarController .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabBarController .swift"; sourceTree = "<group>"; };
 		144AB204294C9343005916F8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		144AB206294CAEC4005916F8 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		144AB209294D0585005916F8 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
@@ -89,6 +91,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14269426297BD8C70025706B /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				14269427297BD90B0025706B /* TabBarController .swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		144AB208294CFB03005916F8 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +133,7 @@
 				14A208D22938B38400B5334A /* Profile */,
 				14E24AC9293C898C00861CF6 /* SingleImage */,
 				14AEC5E029585C54009F1126 /* SpalshViewController */,
+				14269426297BD8C70025706B /* TabBar */,
 				14CD98FC2943377B00495478 /* Helpers */,
 				14CE6877295201DF00AE679B /* Models */,
 				14CD98FF29433A2100495478 /* Resources */,
@@ -328,6 +339,7 @@
 				14A208BA292CF38000B5334A /* AppDelegate.swift in Sources */,
 				14E24AC82938F8A500861CF6 /* SingleImageViewController.swift in Sources */,
 				14A208BC292CF38000B5334A /* SceneDelegate.swift in Sources */,
+				14269428297BD90B0025706B /* TabBarController .swift in Sources */,
 				14AEC5ED296C1212009F1126 /* ProfileService.swift in Sources */,
 				14CD98FE294337AB00495478 /* UIColor+Extensions .swift in Sources */,
 				14AEC5F3296C2CA8009F1126 /* ProfileImageService.swift in Sources */,

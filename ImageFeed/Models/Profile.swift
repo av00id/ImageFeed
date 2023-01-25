@@ -18,6 +18,7 @@ struct Profile: Decodable {
         case name = "name"
         case bio = "bio"
     }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = try container.decode(String.self, forKey: .name)

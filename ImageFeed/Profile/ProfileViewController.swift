@@ -4,9 +4,7 @@
 //
 //  Created by Сергей Андреев on 01.12.2022.
 //
-// Уважаемый или уважаемая ревьюер, кажется, есть проблема с загрузкой аватара, сначала все получилось
-// но картинка был квадратной. После внесения правок вижу свои данные и фото дамы, которое было изначально.
-// Буду признателен, если объясните в чем моя ошибка
+
 import UIKit
 import Kingfisher
 
@@ -132,13 +130,14 @@ extension ProfileViewController {
        // cache.clearMemoryCache()
       //  cache.clearDiskCache()
         
-        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
         userPick.kf.indicatorType = .activity
         userPick.kf.setImage(with:url,
                              placeholder: UIImage(named: "stub"),
                              options: [
                                 .transition(.fade(1)),
-                                .processor(processor)])
+                                .processor(processor),
+                                .cacheOriginalImage])
     }
 }
 
