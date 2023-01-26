@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     private var userPick: UIImageView = {
         let profileImage = UIImage(imageLiteralResourceName: "user_pick")
@@ -59,6 +63,8 @@ final class ProfileViewController: UIViewController {
         
         addProfileContent()
         addConstraints()
+        observeAvatarChanges()
+        updateProfileDetails(profile: profileService.profile)
     }
     
     private func addProfileContent() {
@@ -90,6 +96,52 @@ final class ProfileViewController: UIViewController {
         print("tap")
     }
 }
+
+extension ProfileViewController {
+    
+    private func updateProfileDetails(profile: Profile?) {
+        guard let profile = profile else { return }
+        userName.text = profile.name
+        userTag.text = profile.login
+        userText.text = profile.bio
+    }
+}
+
+extension ProfileViewController {
+    private func observeAvatarChanges() {
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.updateAvatar()
+        }
+        updateAvatar()
+    }
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        
+       // let cache = ImageCache.default
+       // cache.clearMemoryCache()
+      //  cache.clearDiskCache()
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        userPick.kf.indicatorType = .activity
+        userPick.kf.setImage(with:url,
+                             placeholder: UIImage(named: "stub"),
+                             options: [
+                                .transition(.fade(1)),
+                                .processor(processor),
+                                .cacheOriginalImage])
+    }
+}
+
+
 
 
 
