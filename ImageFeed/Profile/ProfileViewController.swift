@@ -10,8 +10,14 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    private let profileService = ProfileService.shared
+    private var profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    private var gradientAvatar: CAGradientLayer!
+    private var gradientName: CAGradientLayer!
+    private var gradientLogin: CAGradientLayer!
+    private var gradientDescription: CAGradientLayer!
+    private var animationGradient = AnimationGradientFactory.shared
+    
     
     private var userPick: UIImageView = {
         let profileImage = UIImage(imageLiteralResourceName: "user_pick")
@@ -23,10 +29,7 @@ final class ProfileViewController: UIViewController {
     private var userName: UILabel = {
         let name = UILabel()
         name.translatesAutoresizingMaskIntoConstraints = false
-        name.text = "Екатерина Новикова"
         name.font = UIFont.boldSystemFont(ofSize: 23)
-        //name.font = UIFont(name: "YSDisplay-Bold", size: 23)
-        //почему-то не удается использовать кастомный шрифт,через сториборд выставляется, но тут не срабатывает
         name.textColor = .ypWhite
         return name
     } ()
@@ -34,7 +37,6 @@ final class ProfileViewController: UIViewController {
     private var userTag: UILabel = {
         let tag = UILabel()
         tag.translatesAutoresizingMaskIntoConstraints = false
-        tag.text = "@ekaterina_nov"
         tag.font = UIFont.systemFont(ofSize: 13)
         tag.textColor = .ypGray
         return tag
@@ -43,7 +45,6 @@ final class ProfileViewController: UIViewController {
     private var userText: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
-        text.text = "Hello,world!"
         text.font = UIFont.systemFont(ofSize: 13)
         text.textColor = .ypWhite
         return text
@@ -58,20 +59,39 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         addProfileContent()
         addConstraints()
+        prepareAction()
         observeAvatarChanges()
         updateProfileDetails(profile: profileService.profile)
     }
     
     private func addProfileContent() {
+        view.backgroundColor = .ypBlack
+        
         view.addSubview(userPick)
+        gradientAvatar = animationGradient.createGradient(width: 70, height: 70, cornerRadius: 35)
+        userPick.layer.addSublayer(gradientAvatar)
+        
         view.addSubview(userName)
+        gradientName = animationGradient.createGradient(width: 223, height: 23, cornerRadius: 11.5)
+        userName.layer.addSublayer(gradientName)
+        
         view.addSubview(userTag)
+        gradientLogin = animationGradient.createGradient(width: 89, height: 18, cornerRadius: 9)
+        userTag.layer.addSublayer(gradientLogin)
+        
         view.addSubview(userText)
+        gradientDescription = animationGradient.createGradient(width: 67, height: 18, cornerRadius: 9)
+        userText.layer.addSublayer(gradientDescription)
+        
         view.addSubview(logoutButton)
     }
     
@@ -93,7 +113,38 @@ final class ProfileViewController: UIViewController {
     }
     @objc
     private func didTapLogoutButton(){
-        print("tap")
+        showLogoutAlert()
+    }
+    private func onLogout() {
+        OAuth2TokenStorage().clearToken()
+        CookiesCleaner.clean()
+        tabBarController?.dismiss(animated: true)
+        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+        window.rootViewController = SplashViewController()
+    }
+    private func showLogoutAlert() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        
+        let agreeAction = UIAlertAction(
+            title: "Да", style: .default
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.onLogout()
+            }
+        }
+        let dismissActrion = UIAlertAction(
+            title: "Нет",
+            style: .default)
+        
+        alert.addAction(agreeAction)
+        alert.addAction(dismissActrion)
+        
+        present(alert, animated: true)
     }
 }
 
@@ -104,6 +155,10 @@ extension ProfileViewController {
         userName.text = profile.name
         userTag.text = profile.login
         userText.text = profile.bio
+        
+        gradientName.removeFromSuperlayer()
+        gradientLogin.removeFromSuperlayer()
+        gradientDescription.removeFromSuperlayer()
     }
 }
 
@@ -111,13 +166,13 @@ extension ProfileViewController {
     private func observeAvatarChanges() {
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAvatar()
-        }
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
         updateAvatar()
     }
     private func updateAvatar() {
@@ -125,10 +180,6 @@ extension ProfileViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
-        
-       // let cache = ImageCache.default
-       // cache.clearMemoryCache()
-      //  cache.clearDiskCache()
         
         let processor = RoundCornerImageProcessor(cornerRadius: 61)
         userPick.kf.indicatorType = .activity
@@ -138,7 +189,19 @@ extension ProfileViewController {
                                 .transition(.fade(1)),
                                 .processor(processor),
                                 .cacheOriginalImage])
+        gradientAvatar.removeFromSuperlayer()
     }
+    
+}
+extension ProfileViewController {
+    private func prepareAction() {
+        logoutButton.addTarget(
+            self,
+            action: #selector(didTapLogoutButton),
+            for: .touchUpInside
+        )
+    }
+    
 }
 
 

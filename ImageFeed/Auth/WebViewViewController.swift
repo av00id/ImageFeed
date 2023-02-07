@@ -20,6 +20,10 @@ final class WebViewViewController: UIViewController  {
     @IBOutlet private var webView: WKWebView!
     @IBOutlet private var progressView: UIProgressView!
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
+    
     override func viewDidLoad(){
         super.viewDidLoad()
         
@@ -83,7 +87,7 @@ extension WebViewViewController: WKNavigationDelegate {
         guard
             let url = navigationAction.request.url,
             let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
+            urlComponents.path == Constants.nativePath,
             let items = urlComponents.queryItems,
             let codeItem = items.first(where: { $0.name == "code"})
         else {
@@ -92,3 +96,4 @@ extension WebViewViewController: WKNavigationDelegate {
         return codeItem.value
     }
 }
+

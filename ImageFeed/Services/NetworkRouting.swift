@@ -13,7 +13,7 @@ enum RequestType {
 }
 
 protocol NetworkClient {
-    func fetch<Model: Decodable>(requestType: RequestType,
+    func fetch<Model: Decodable>(requestType: RequestType, withToken: Bool,
                                  handler: @escaping (Result<Model, Error>) -> Void) -> URLSessionTask
 }
 final class NetworkRouting: NetworkClient{
@@ -40,15 +40,32 @@ final class NetworkRouting: NetworkClient{
         }
     }
     
-    func fetch<Model>(requestType: RequestType, handler: @escaping (Result<Model, Error>) -> Void) -> URLSessionTask where Model : Decodable {
-        let request: URLRequest
+    private func buildRequest(from requestType: RequestType, withToken: Bool = true) -> URLRequest {
+        var request: URLRequest
         switch requestType {
         case .url(let url):
             request = URLRequest(url: url)
         case .urlRequest(let urlRequest):
             request = urlRequest
         }
+        if (withToken) {
+                    guard let token = OAuth2TokenStorage().token else {
+                        fatalError("Empty Token")
+                    }
+
+                    request.setValue(
+                        "Bearer \(token)",
+                        forHTTPHeaderField: "Authorization"
+                    )
+                }
+
+                return request
+    }
+    
+    func fetch<Model>(requestType: RequestType, withToken: Bool = true, handler: @escaping (Result<Model, Error>) -> Void) -> URLSessionTask where Model : Decodable {
         
+        let request = buildRequest(from: requestType, withToken: withToken)
+    
         let task = urlSession.dataTask(
             with: request
         ) { data, response, error in
