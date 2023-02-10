@@ -112,27 +112,26 @@ extension ImagesListViewController: ImagesListCellDelegate {
     }
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        
         let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
         
         imageListService.changeLike(photoId: photo.id, shouldLike: !photo.isLiked, photoIdx: indexPath.row) { [weak cell, self] response in
             guard let cell else { return }
-            
-            switch response {
-            case .success(let photoResult):
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                switch response {
+                case .success(let photoResult):
                     self.photos[indexPath.row].isLiked = photoResult.isLiked
                     cell.setIsLiked(isLiked: photoResult.isLiked)
+                case .failure(let error):
+                    print(error)
                 }
-            case .failure(let error):
-                print(error)
+                UIBlockingProgressHUD.dismiss()
             }
-            UIBlockingProgressHUD.dismiss()
         }
     }
 }
 
+    
 
 
 

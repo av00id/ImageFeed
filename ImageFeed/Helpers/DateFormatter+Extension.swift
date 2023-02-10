@@ -8,9 +8,14 @@
 import Foundation
 
 extension DateFormatter {
-    var displayFormat: DateFormatter {
-        self.dateStyle = .long
-        self.timeStyle = .none
-        return self
-    }
+    
+    static let displayFormat: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "ru_ru")
+        return formatter
+    }()
+    
+    static let isoDateFormatter = ISO8601DateFormatter()
 } 

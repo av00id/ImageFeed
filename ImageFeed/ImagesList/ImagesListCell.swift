@@ -55,8 +55,10 @@ final class ImagesListCell: UITableViewCell {
                 }
         cellImage.kf.setImage(with: photo.thumbImageURL) { result in self.reloadView()
         }
-        dateLabel.text = DateFormatter().displayFormat.string(from: photo.createdAt)
         setIsLiked(isLiked: photo.isLiked)
+        if let date = photo.createdAt {
+            dateLabel.text = date.dateTimeString
+        }
     }
     
     func setIsLiked(isLiked: Bool) {

@@ -16,15 +16,10 @@ final class ImagesListService {
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     static let shared = ImagesListService()
     
-    private let dateFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        return formatter
-    }()
-    
     private func convertPhotoResult(from result: PhotoResult) -> Photo {
         Photo(id: result.id,
               size: CGSize(width: result.width, height: result.height),
-              createdAt: dateFormatter.date(from: result.createdAt) ?? Date(),
+              createdAt: Date().convertToDate(result.createdAt),
               welcomeDescription: result.description,
               thumbImageURL: result.urls.thumb,
               largeImageURL: result.urls.full,

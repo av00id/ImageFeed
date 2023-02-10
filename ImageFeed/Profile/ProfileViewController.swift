@@ -4,6 +4,7 @@
 //
 //  Created by Сергей Андреев on 01.12.2022.
 //
+/* Данил, доброго времени суток! Большое спасибо за обратную связь, замечания принял к сведению. Внес некоторые правки, в частности, по критическим замечаниям, в этот раз, кажется, все в порядке(если я все правильно понял..). К сожалению, отчаянно не хватает времени, дэдлайн близко, поэтому буду очень благодарен, если подскажете - в чем может быть проблемы со шрифтами? Я находил похожий гайд и пройдя по пунктам не пришел к какому-либо решению, сейчас такая же история.. */
 
 import UIKit
 import Kingfisher
@@ -22,6 +23,8 @@ final class ProfileViewController: UIViewController {
     private var userPick: UIImageView = {
         let profileImage = UIImage(imageLiteralResourceName: "user_pick")
         let userPick = UIImageView(image: profileImage)
+        userPick.clipsToBounds = true
+        userPick.layer.cornerRadius = 35
         userPick.translatesAutoresizingMaskIntoConstraints = false
         return userPick
     }()
@@ -29,7 +32,7 @@ final class ProfileViewController: UIViewController {
     private var userName: UILabel = {
         let name = UILabel()
         name.translatesAutoresizingMaskIntoConstraints = false
-        name.font = UIFont.boldSystemFont(ofSize: 23)
+        name.font = UIFont.asset(FontAsset.ysDisplayBold, size: 23)
         name.textColor = .ypWhite
         return name
     } ()
@@ -118,6 +121,7 @@ final class ProfileViewController: UIViewController {
     private func onLogout() {
         OAuth2TokenStorage().clearToken()
         CookiesCleaner.clean()
+        CacheCleaner.clean()
         tabBarController?.dismiss(animated: true)
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         window.rootViewController = SplashViewController()

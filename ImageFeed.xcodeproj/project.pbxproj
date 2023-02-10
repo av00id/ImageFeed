@@ -38,6 +38,8 @@
 		14AEC5F5296C2D78009F1126 /* UserResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AEC5F4296C2D78009F1126 /* UserResult.swift */; };
 		14AEC5F7296C2E26009F1126 /* ProfileImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AEC5F6296C2E26009F1126 /* ProfileImage.swift */; };
 		14AEC5F9296DA4B2009F1126 /* ErrorAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AEC5F8296DA4B2009F1126 /* ErrorAlertViewController.swift */; };
+		14B9C1082996440100F35754 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9C1072996440100F35754 /* Date+Extensions.swift */; };
+		14B9C10A2996588100F35754 /* CacheCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9C1092996588100F35754 /* CacheCleaner.swift */; };
 		14BA0011298BBB1E00E16D8F /* DateFormatter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BA0010298BBB1E00E16D8F /* DateFormatter+Extension.swift */; };
 		14CD98FE294337AB00495478 /* UIColor+Extensions .swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD98FD294337AB00495478 /* UIColor+Extensions .swift */; };
 		14CD990329433AB200495478 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 14CD990129433AB200495478 /* YS Display-Bold.ttf */; };
@@ -89,6 +91,8 @@
 		14AEC5F4296C2D78009F1126 /* UserResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResult.swift; sourceTree = "<group>"; };
 		14AEC5F6296C2E26009F1126 /* ProfileImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImage.swift; sourceTree = "<group>"; };
 		14AEC5F8296DA4B2009F1126 /* ErrorAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertViewController.swift; sourceTree = "<group>"; };
+		14B9C1072996440100F35754 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		14B9C1092996588100F35754 /* CacheCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheCleaner.swift; sourceTree = "<group>"; };
 		14BA0010298BBB1E00E16D8F /* DateFormatter+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extension.swift"; sourceTree = "<group>"; };
 		14BA0016298BEED400E16D8F /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14CD98FD294337AB00495478 /* UIColor+Extensions .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions .swift"; sourceTree = "<group>"; };
@@ -218,6 +222,7 @@
 				14CD98FD294337AB00495478 /* UIColor+Extensions .swift */,
 				14AEC5E3295C55AB009F1126 /* UIFont+Extension.swift */,
 				14BA0010298BBB1E00E16D8F /* DateFormatter+Extension.swift */,
+				14B9C1072996440100F35754 /* Date+Extensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -266,6 +271,7 @@
 				14AEC5EE296C1B42009F1126 /* NetworkRouting.swift */,
 				149135462991367700E52558 /* AnimationGradientFactory.swift */,
 				14913548299280AA00E52558 /* CookiesCleaner .swift */,
+				14B9C1092996588100F35754 /* CacheCleaner.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -397,6 +403,7 @@
 				1426942D29816DED0025706B /* Photo.swift in Sources */,
 				14A208BE292CF38000B5334A /* ImagesListViewController.swift in Sources */,
 				14AEC5EF296C1B42009F1126 /* NetworkRouting.swift in Sources */,
+				14B9C10A2996588100F35754 /* CacheCleaner.swift in Sources */,
 				14CE687D295206E200AE679B /* OAuth2Service.swift in Sources */,
 				149135472991367700E52558 /* AnimationGradientFactory.swift in Sources */,
 				14913549299280AB00E52558 /* CookiesCleaner .swift in Sources */,
@@ -412,6 +419,7 @@
 				14A208BC292CF38000B5334A /* SceneDelegate.swift in Sources */,
 				14269428297BD90B0025706B /* TabBarController .swift in Sources */,
 				14AEC5ED296C1212009F1126 /* ProfileService.swift in Sources */,
+				14B9C1082996440100F35754 /* Date+Extensions.swift in Sources */,
 				14CD98FE294337AB00495478 /* UIColor+Extensions .swift in Sources */,
 				14AEC5F3296C2CA8009F1126 /* ProfileImageService.swift in Sources */,
 				14BA0011298BBB1E00E16D8F /* DateFormatter+Extension.swift in Sources */,
