@@ -21,7 +21,7 @@ final class OAuth2Service {
         lastCode = code
         
         
-        task = networkClient.fetch(requestType: .urlRequest(urlRequest: request)) {
+        task = networkClient.fetch(requestType: .urlRequest(urlRequest: request), withToken: false) {
             [weak self] (response: Result<OAuthTokenResponseBody, Error>) in            
             
             guard let self = self else { return }

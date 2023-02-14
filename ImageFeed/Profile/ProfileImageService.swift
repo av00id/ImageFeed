@@ -16,12 +16,13 @@ final class ProfileImageService {
     private let networkClient = NetworkRouting()
     
     func fetchProfileImageURL(username: String,
-                              token: String?,
                               _ completion: @escaping (Result<Void, Error>) -> Void) {
         task?.cancel()
         
-        if let request = makeRequest(username: username, token: token) {
-            task = networkClient.fetch(requestType: .urlRequest(urlRequest: request)) {
+        guard let url = URL(string: "\(Constants.profileImageURL)/\(username)") else {
+            fatalError("Enable to build profile URL")
+        }
+            task = networkClient.fetch(requestType: .url(url: url)) {
                 [weak self] (result: Result<UserResult, Error>) in
                 guard let self = self else { return }
                 switch result {
@@ -44,15 +45,5 @@ final class ProfileImageService {
         }
     }
     
-    private func makeRequest(username: String, token: String?) -> URLRequest? {
-        if let urlComponents = URLComponents(string: "\(Constants.profileImageURL)/\(username)") {
-            var request = URLRequest(url: urlComponents.url!)
-            if let token = token {
-                request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            }
-            
-            return request
-        }
-        return nil
-    }
-}
+
+

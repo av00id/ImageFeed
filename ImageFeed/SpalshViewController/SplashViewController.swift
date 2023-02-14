@@ -10,6 +10,9 @@ import ProgressHUD
 
 final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
+    private var isAuthorized: Bool = false
+    private var maxRetryCount = 5
     
     private let showAuthScreenSegueIdentifier = "ShowAuthenticationScreen"
     private let oauth2TokenStorage = OAuth2TokenStorage()
@@ -23,6 +26,10 @@ final class SplashViewController: UIViewController {
         logoImage.translatesAutoresizingMaskIntoConstraints = false
         return logoImage
     }()
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+          return .lightContent
+      }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,10 +48,18 @@ final class SplashViewController: UIViewController {
         window.rootViewController = tabBarController
     }
     private func checkAuth() {
-        if let token = oauth2TokenStorage.token {
-            fetchProfile(token: token)
+        guard isAuthorized == false else {
+            return
+        }
+        if oauth2TokenStorage.token != nil {
+            fetchProfile()
         } else {
-            let authViewController = AuthViewController()
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+                        guard let authViewController = storyboard.instantiateViewController(
+                            withIdentifier: "AuthViewController"
+                        ) as? AuthViewController else {
+                            return
+                        }
             authViewController.delegate = self
             authViewController.modalPresentationStyle = .fullScreen
             present(authViewController, animated: true)
@@ -68,6 +83,7 @@ extension SplashViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        isAuthorized = true
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
             UIBlockingProgressHUD.show()
@@ -81,7 +97,7 @@ extension SplashViewController: AuthViewControllerDelegate {
                 switch result {
                 case .success(let token):
                     self.oauth2TokenStorage.token = token
-                    self.fetchProfile(token: token)
+                    self.fetchProfile()
                 case .failure:
                     UIBlockingProgressHUD.dismiss()
                     self.showError()
@@ -89,17 +105,15 @@ extension SplashViewController: AuthViewControllerDelegate {
             }
         }
     }
-    private func fetchProfile(token: String) {
-        profileService.fetchProfile(token) { [weak self] result in
+    private func fetchProfile() {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile() { [weak self] result in
             DispatchQueue.main.async { [self] in
                 guard let self = self else { return }
                 switch result {
                 case .success(let username):
-                    ProfileImageService.shared.fetchProfileImageURL(username: username,
-                                                                    token: token) { _ in }
-                    DispatchQueue.main.async {
-                        self.switchToTabBarController()
-                    }
+                    ProfileImageService.shared.fetchProfileImageURL(username: username) { _ in }
+                    self.switchToTabBarController()
                 case .failure:
                     self.showError()
                 }
@@ -111,13 +125,16 @@ extension SplashViewController: AuthViewControllerDelegate {
 
 extension SplashViewController {
     private func showError() {
-        self.errorAlertController
+        let isRetryLimit = self.maxRetryCount >= 5
+        errorAlertController
             .showAlert(
                 over: self,
                 title: "Что-то пошло не так(",
-                message: "Не удалось войти в систему",
-                actionTitle: "Ok") {
-                    self.checkAuth()
+                message: isRetryLimit ? "Все сломалось" : "Попробовать еще раз?",
+                actionTitle: isRetryLimit ? "Ок" : "Да") {
+                    if !isRetryLimit {
+                        self.checkAuth()
+                    }
                 }
     }
 }
