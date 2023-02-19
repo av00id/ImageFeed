@@ -4,15 +4,24 @@
 //
 //  Created by Сергей Андреев on 01.12.2022.
 //
-/* Данил, доброго времени суток! Большое спасибо за обратную связь, замечания принял к сведению. Внес некоторые правки, в частности, по критическим замечаниям, в этот раз, кажется, все в порядке(если я все правильно понял..). К сожалению, отчаянно не хватает времени, дэдлайн близко, поэтому буду очень благодарен, если подскажете - в чем может быть проблемы со шрифтами? Я находил похожий гайд и пройдя по пунктам не пришел к какому-либо решению, сейчас такая же история.. */
 
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol { get set }
+    func updateAvatar()
+    func onLogout()
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
     
     private var profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    lazy var presenter: ProfileViewPresenterProtocol = {
+        return ProfileViewPresenter()
+    } ()
+    
     private var gradientAvatar: CAGradientLayer!
     private var gradientName: CAGradientLayer!
     private var gradientLogin: CAGradientLayer!
@@ -57,6 +66,7 @@ final class ProfileViewController: UIViewController {
         let button = UIButton.systemButton(with: UIImage(systemName: "ipad.and.arrow.forward")!,
                                            target: self,
                                            action: #selector(Self.didTapLogoutButton))
+        button.accessibilityIdentifier = "logout button"
         button.tintColor = .ypRed
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -72,7 +82,8 @@ final class ProfileViewController: UIViewController {
         addProfileContent()
         addConstraints()
         prepareAction()
-        observeAvatarChanges()
+        presenter.view = self
+        presenter.viewDidLoad()
         updateProfileDetails(profile: profileService.profile)
     }
     
@@ -114,11 +125,8 @@ final class ProfileViewController: UIViewController {
             logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant: -18)
         ])
     }
-    @objc
-    private func didTapLogoutButton(){
-        showLogoutAlert()
-    }
-    private func onLogout() {
+    
+    func onLogout() {
         OAuth2TokenStorage().clearToken()
         CookiesCleaner.clean()
         CacheCleaner.clean()
@@ -126,28 +134,10 @@ final class ProfileViewController: UIViewController {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         window.rootViewController = SplashViewController()
     }
-    private func showLogoutAlert() {
-        let alert = UIAlertController(
-            title: "Пока, пока!",
-            message: "Уверены, что хотите выйти?",
-            preferredStyle: .alert
-        )
-        
-        let agreeAction = UIAlertAction(
-            title: "Да", style: .default
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.onLogout()
-            }
-        }
-        let dismissActrion = UIAlertAction(
-            title: "Нет",
-            style: .default)
-        
-        alert.addAction(agreeAction)
-        alert.addAction(dismissActrion)
-        
+    
+    @objc
+    private func didTapLogoutButton(){
+        let alert = presenter.showLogoutAlert()
         present(alert, animated: true)
     }
 }
@@ -167,19 +157,7 @@ extension ProfileViewController {
 }
 
 extension ProfileViewController {
-    private func observeAvatarChanges() {
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
-        updateAvatar()
-    }
-    private func updateAvatar() {
+    func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
@@ -195,8 +173,8 @@ extension ProfileViewController {
                                 .cacheOriginalImage])
         gradientAvatar.removeFromSuperlayer()
     }
-    
 }
+
 extension ProfileViewController {
     private func prepareAction() {
         logoutButton.addTarget(
@@ -205,8 +183,8 @@ extension ProfileViewController {
             for: .touchUpInside
         )
     }
-    
 }
+
 
 
 

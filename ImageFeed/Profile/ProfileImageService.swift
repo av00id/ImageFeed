@@ -19,7 +19,7 @@ final class ProfileImageService {
                               _ completion: @escaping (Result<Void, Error>) -> Void) {
         task?.cancel()
         
-        guard let url = URL(string: "\(Constants.profileImageURL)/\(username)") else {
+        guard let url = URL(string: "\(AuthConfiguration.profileImageURL)/\(username)") else {
             fatalError("Enable to build profile URL")
         }
             task = networkClient.fetch(requestType: .url(url: url)) {

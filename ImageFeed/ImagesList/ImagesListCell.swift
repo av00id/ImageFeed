@@ -50,10 +50,10 @@ final class ImagesListCell: UITableViewCell {
         cellImage.layer.addSublayer(gradient)
         
         cellImage.kf.indicatorType = .activity
-        cellImage.kf.setImage(with: photo.thumbImageURL) {_ in
+        cellImage.kf.setImage(with: photo.thumbImageURL, placeholder: UIImage(named: "temporary_placeholder")) {_ in
             gradient.removeFromSuperlayer()
                 }
-        cellImage.kf.setImage(with: photo.thumbImageURL) { result in self.reloadView()
+        cellImage.kf.setImage(with: photo.thumbImageURL, placeholder: UIImage(named: "temporary_placeholder")) { result in self.reloadView()
         }
         setIsLiked(isLiked: photo.isLiked)
         if let date = photo.createdAt {

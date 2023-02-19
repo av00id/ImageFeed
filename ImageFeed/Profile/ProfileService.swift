@@ -19,7 +19,7 @@ final class ProfileService {
     func fetchProfile(completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
         
-        guard let url = URL(string: Constants.profileURL) else {
+        guard let url = URL(string: AuthConfiguration.profileURL) else {
             fatalError("Unable to build profile URL")
         }
             task = networkClient.fetch(requestType: .url(url: url)) {
