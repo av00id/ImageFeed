@@ -19,8 +19,8 @@ final class TabBarController: UITabBarController {
             selectedImage: nil
         )
         viewControllers = [imagesListViewController, profileViewController]
-                tabBar.items?.forEach { item in
-                    item.title = ""
-                }
+        tabBar.items?.forEach { item in
+            item.title = ""
+        }
     }
 } 

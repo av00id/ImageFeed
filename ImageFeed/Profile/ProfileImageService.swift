@@ -22,28 +22,28 @@ final class ProfileImageService {
         guard let url = URL(string: "\(AuthConfiguration.profileImageURL)/\(username)") else {
             fatalError("Enable to build profile URL")
         }
-            task = networkClient.fetch(requestType: .url(url: url)) {
-                [weak self] (result: Result<UserResult, Error>) in
-                guard let self = self else { return }
-                switch result {
-                case .success(let userProfile):
-                    if let image = userProfile.profileImage?.image {
-                        self.avatarURL = image
-                        NotificationCenter.default
-                            .post(
-                                name: ProfileImageService.didChangeNotification,
-                                object: self,
-                                userInfo: ["URL": image]
-                            )
-                    }
-                    completion(.success(()))
-                    
-                case .failure(let error):
-                    completion(.failure(error))
+        task = networkClient.fetch(requestType: .url(url: url)) {
+            [weak self] (result: Result<UserResult, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let userProfile):
+                if let image = userProfile.profileImage?.image {
+                    self.avatarURL = image
+                    NotificationCenter.default
+                        .post(
+                            name: ProfileImageService.didChangeNotification,
+                            object: self,
+                            userInfo: ["URL": image]
+                        )
                 }
+                completion(.success(()))
+                
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
-    
+}
+
 
 

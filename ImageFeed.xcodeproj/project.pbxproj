@@ -93,6 +93,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		141AE4DA29A36F2000D1ACDA /* ImageFeedTests-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ImageFeedTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		14269427297BD90B0025706B /* TabBarController .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabBarController .swift"; sourceTree = "<group>"; };
 		1426942929816D6A0025706B /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListService.swift; sourceTree = "<group>"; };
 		1426942C29816DEC0025706B /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
@@ -192,6 +193,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		141AE4D729A36F2000D1ACDA /* ImageFeedTests */ = {
+			isa = PBXGroup;
+			children = (
+				14A3030E299D162C00C6BCA0 /* ProfileViewTests.swift */,
+				14A30310299D17EE00C6BCA0 /* ImagesListTests.swift */,
+				141AE4DA29A36F2000D1ACDA /* ImageFeedTests-Bridging-Header.h */,
+				14A30309299CF51600C6BCA0 /* WebViewTests */,
+			);
+			path = ImageFeedTests;
+			sourceTree = "<group>";
+		};
 		14269426297BD8C70025706B /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -216,7 +228,6 @@
 			isa = PBXGroup;
 			children = (
 				14A208B8292CF38000B5334A /* ImageFeed */,
-				14A302FD299CED8F00C6BCA0 /* ImageFeedUnitTests */,
 				14A30317299D1D2D00C6BCA0 /* ImageFeedUITests */,
 				14A208B7292CF38000B5334A /* Products */,
 			);
@@ -251,6 +262,7 @@
 				14A208BF292CF38000B5334A /* Main.storyboard */,
 				14A208B9292CF38000B5334A /* AppDelegate.swift */,
 				14A208BB292CF38000B5334A /* SceneDelegate.swift */,
+				141AE4D729A36F2000D1ACDA /* ImageFeedTests */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -275,16 +287,6 @@
 				14AEC5F2296C2CA8009F1126 /* ProfileImageService.swift */,
 			);
 			path = Profile;
-			sourceTree = "<group>";
-		};
-		14A302FD299CED8F00C6BCA0 /* ImageFeedUnitTests */ = {
-			isa = PBXGroup;
-			children = (
-				14A30309299CF51600C6BCA0 /* WebViewTests */,
-				14A3030E299D162C00C6BCA0 /* ProfileViewTests.swift */,
-				14A30310299D17EE00C6BCA0 /* ImagesListTests.swift */,
-			);
-			path = ImageFeedUnitTests;
 			sourceTree = "<group>";
 		};
 		14A30309299CF51600C6BCA0 /* WebViewTests */ = {

@@ -22,21 +22,21 @@ final class ProfileService {
         guard let url = URL(string: AuthConfiguration.profileURL) else {
             fatalError("Unable to build profile URL")
         }
-            task = networkClient.fetch(requestType: .url(url: url)) {
-                [weak self] (result: Result<Profile, Error>) in
-                guard let self = self else { return }
-                switch result {
-                case .success(let profile):
-                    self.profile = profile
-                    completion(.success(profile.username))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+        task = networkClient.fetch(requestType: .url(url: url)) {
+            [weak self] (result: Result<Profile, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let profile):
+                self.profile = profile
+                completion(.success(profile.username))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
-    
-  
-             
-    
+}
+
+
+
+
 

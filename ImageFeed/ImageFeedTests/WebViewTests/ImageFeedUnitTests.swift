@@ -3,7 +3,7 @@
 //  ImageFeedUnitTests
 //
 //  Created by Сергей Андреев on 15.02.2023.
-//
+// Папки 
 @testable import ImageFeed
 import XCTest
 
@@ -95,3 +95,5 @@ final class WebViewTests: XCTestCase {
         XCTAssertEqual(code, "test code")
     }
 }
+
+
