@@ -54,8 +54,8 @@ final class ImagesListCell: UITableViewCell {
             gradient.removeFromSuperlayer()
         }
         cellImage.kf.setImage(with: photo.thumbImageURL, placeholder: UIImage(named: "temporary_placeholder")) { [weak self] result in
-            guard self != nil else { return }
-            self?.reloadView()
+            guard let self = self else { return }
+            self.reloadView()
         }
         setIsLiked(isLiked: photo.isLiked)
         if let date = photo.createdAt {
