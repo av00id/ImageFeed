@@ -44,16 +44,18 @@ final class ImagesListCell: UITableViewCell {
         let cornerRadius: CGFloat = cellImage.layer.cornerRadius
         
         let gradient = animationGradient.createGradient(
-                  width: frame.width - offsetX * 2,
-                  height: frame.height - offsetY * 2,
-                  offsetX: offsetX, offsetY: offsetY, cornerRadius: cornerRadius)
+            width: frame.width - offsetX * 2,
+            height: frame.height - offsetY * 2,
+            offsetX: offsetX, offsetY: offsetY, cornerRadius: cornerRadius)
         cellImage.layer.addSublayer(gradient)
         
         cellImage.kf.indicatorType = .activity
-        cellImage.kf.setImage(with: photo.thumbImageURL) {_ in
+        cellImage.kf.setImage(with: photo.thumbImageURL, placeholder: UIImage(named: "temporary_placeholder")) { _ in
             gradient.removeFromSuperlayer()
-                }
-        cellImage.kf.setImage(with: photo.thumbImageURL) { result in self.reloadView()
+        }
+        cellImage.kf.setImage(with: photo.thumbImageURL, placeholder: UIImage(named: "temporary_placeholder")) { [weak self] result in
+            guard let self = self else { return }
+            self.reloadView()
         }
         setIsLiked(isLiked: photo.isLiked)
         if let date = photo.createdAt {

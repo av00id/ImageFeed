@@ -28,8 +28,8 @@ final class SplashViewController: UIViewController {
     }()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-          return .lightContent
-      }
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,11 +55,11 @@ final class SplashViewController: UIViewController {
             fetchProfile()
         } else {
             let storyboard = UIStoryboard(name: "Main", bundle: .main)
-                        guard let authViewController = storyboard.instantiateViewController(
-                            withIdentifier: "AuthViewController"
-                        ) as? AuthViewController else {
-                            return
-                        }
+            guard let authViewController = storyboard.instantiateViewController(
+                withIdentifier: "AuthViewController"
+            ) as? AuthViewController else {
+                return
+            }
             authViewController.delegate = self
             authViewController.modalPresentationStyle = .fullScreen
             present(authViewController, animated: true)

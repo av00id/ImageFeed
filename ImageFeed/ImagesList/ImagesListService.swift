@@ -48,7 +48,7 @@ final class ImagesListService {
     
     
     private func getNextPhotosURL() -> URL? {
-        guard let url = URL(string: Constants.photoURL) else { return nil }
+        guard let url = URL(string: AuthConfiguration.photoURL) else { return nil }
         
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         let nextPage = lastLoadedPage + 1
@@ -80,7 +80,7 @@ extension ImagesListService {
     func changeLike(photoId: String, shouldLike: Bool, photoIdx: Int,
                     _ completion: @escaping (Result<Photo, Error>) -> Void) {
         
-        guard let url = URL(string: "\(Constants.photoURL)/\(photoId)/like") else {
+        guard let url = URL(string: "\(AuthConfiguration.photoURL)/\(photoId)/like") else {
             fatalError("Empty url")
         }
         var request = URLRequest(url: url)

@@ -7,7 +7,12 @@
 
 import UIKit
 
-final class ImagesListViewController: UIViewController {
+protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListPresenterProtocol { get set }
+    func updateTableViewAnimated()
+}
+
+final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
     
     private var photosName = [String]()
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
@@ -15,6 +20,10 @@ final class ImagesListViewController: UIViewController {
     private let imageListService = ImagesListService.shared
     private var imageListServiceObserver: NSObjectProtocol?
     private var photos: [Photo] = []
+    
+    lazy var presenter: ImagesListPresenterProtocol = {
+        return ImagesListPresenter()
+    }()
     
     private var gradient: CAGradientLayer!
     private let animationGradient = AnimationGradientFactory.shared
@@ -27,11 +36,8 @@ final class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        observeImagesLoad()
-        imageListService.fetchPhotosNextPage()
-        
-        tableView.dataSource = self
-        tableView.delegate = self
+        presenter.view = self
+        presenter.viewDidLoad()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -76,20 +82,8 @@ extension ImagesListViewController: UITableViewDelegate {
 }
 
 extension ImagesListViewController {
-    private func observeImagesLoad() {
-        imageListServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ImagesListService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateTableViewAnimated()
-                
-            }
-    }
     
-    private func updateTableViewAnimated() {
+    func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imageListService.photos.count
         photos = imageListService.photos
@@ -110,8 +104,10 @@ extension ImagesListViewController: ImagesListCellDelegate {
         _ = photos[indexPath.row]
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
+    
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
+        
         let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
         
@@ -131,7 +127,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
     }
 }
 
-    
+
 
 
 

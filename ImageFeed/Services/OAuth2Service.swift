@@ -37,11 +37,11 @@ final class OAuth2Service {
         }
     }
     private func makeRequest(code: String) -> URLRequest? {
-        if var urlComponents = URLComponents(string: Constants.tokenURL) {
+        if var urlComponents = URLComponents(string: AuthConfiguration.tokenURL) {
             urlComponents.queryItems = [
-                URLQueryItem(name: "client_id", value: Constants.accessKey),
-                URLQueryItem(name: "client_secret", value: Constants.secretKey),
-                URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+                URLQueryItem(name: "client_id", value: AuthConfiguration.accessKey),
+                URLQueryItem(name: "client_secret", value: AuthConfiguration.secretKey),
+                URLQueryItem(name: "redirect_uri", value: AuthConfiguration.redirectURI),
                 URLQueryItem(name: "code", value: code),
                 URLQueryItem(name: "grant_type", value: "authorization_code")]
             
